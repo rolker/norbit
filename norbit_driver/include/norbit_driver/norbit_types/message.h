@@ -3,24 +3,25 @@
 
 #include <iostream>
 #include <cstring>
+#include <cstdint>
 //#include "header.h"
 #include "bathymetric_data.h"
-#include <norbit/norbit_types/water_column_data.h>
-#include <norbit_msgs/CommonHeader.h>
+#include "norbit_driver/norbit_types/water_column_data.h"
+#include "norbit_interfaces/msg/common_header.hpp"
 #include "CRC.h"
 namespace norbit_types {
 class Message
   {
   public:
     Message(){return;}
-    bool fromBoostArray(boost::array<char, sizeof(norbit_msgs::CommonHeader)> array){
-      header_.reset(new norbit_msgs::CommonHeader);
-      memcpy(header_.get(),&array,sizeof(norbit_msgs::CommonHeader));
+    bool fromBoostArray(boost::array<char, sizeof(norbit_interfaces::msg::CommonHeader)> array){
+      header_.reset(new norbit_interfaces::msg::CommonHeader);
+      memcpy(header_.get(),&array,sizeof(norbit_interfaces::msg::CommonHeader));
       return headerValid();
     }
-    norbit_msgs::CommonHeader commonHeader(){return *header_;}
+    norbit_interfaces::msg::CommonHeader commonHeader(){return *header_;}
     bool headerValid(){
-      return header_->preable==norbit_msgs::CommonHeader::NORBIT_PREAMBLE_KEY &&
+      return header_->preable==norbit_interfaces::msg::CommonHeader::NORBIT_PREAMBLE_KEY &&
              header_->version==NORBIT_CURRENT_VERSION;
     }
     bool setBits(std::shared_ptr<char> bits){
@@ -43,7 +44,7 @@ class Message
       }
     }
     bool msgValid(){
-      std::uint32_t crc = CRC::Calculate(bits_.get(), header_->size - sizeof(norbit_msgs::CommonHeader) , CRC::CRC_32());
+      std::uint32_t crc = CRC::Calculate(bits_.get(), header_->size - sizeof(norbit_interfaces::msg::CommonHeader) , CRC::CRC_32());
       return  crc==header_->crc;
     }
     BathymetricData getBathy(){return bathy_;}
@@ -51,7 +52,7 @@ class Message
 
   protected:
     std::shared_ptr<char> bits_;
-    std::shared_ptr<norbit_msgs::CommonHeader> header_;
+    std::shared_ptr<norbit_interfaces::msg::CommonHeader> header_;
     BathymetricData bathy_;
     WaterColumnData water_column_;
 

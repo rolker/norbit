@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>norbit_driver</name>
+  <version>0.0.0</version>
+  <description>Driver for Norbit sonars</description>
+
+  <maintainer email="kkrasnosky@uri.edu">Kristopher Krasnosky</maintainer>
+  <maintainer email="roland@ccom.unh.edu">Roland Arsenault</maintainer>
+
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>ament_cmake_ros</buildtool_depend>
+
+
+  <depend>marine_acoustic_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>pcl_ros</depend>
+  <depend>norbit_interfaces</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_msgs</depend>
+  <depend>tf2_sensor_msgs</depend>
+
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

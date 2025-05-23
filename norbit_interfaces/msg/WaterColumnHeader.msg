@@ -1,7 +1,7 @@
-float32 snd_velocity     # Sound velocity in m/s
+float32 sound_velocity   # Sound velocity in m/s
 float32 sample_rate      # Sampling rate in Hz
-uint32  N                # Number of beams
-uint32  M                # Number of samples in each beam
+uint32  n                # Number of beams
+uint32  m                # Number of samples in each beam
 float64 time             # Ping timestamp, unix time at
 
 
@@ -23,10 +23,10 @@ float32 gain            # Total processing gain
 uint32  reserved1       # reserved
 float32 swath_dir       # Swath center direction in radians
 float32 swath_open      # Swath opening angle in radians
-float32 tx_freq         # Tx frequency in kHz
-float32 tx_bw           # Tx Bandwidth in kHz
+float32 tx_freq         # Tx frequency in Hz
+float32 tx_bw           # Tx Bandwidth in Hz
 float32 tx_len          # Tx pulse length in sec
-uint32  tx_amp          # Tx amplitude 0-15
+uint32  tx_amp          # Tx amplitude in the relative 0-15 scale
 uint32[3] reserved2     # reserved
 float32 ping_rate       # In Hz
 float32 reserved3       # RESERVED
@@ -37,7 +37,10 @@ int32   vga_t1          # Sample number for first vga value
 float32 vga_g1          # vga gain in dB for first vga value
 int32   vga_t2          # Sample number for second vga value
 float32 vga_g2          # vga gain in dB for second vga value
-uint16[2] reserved4     # RESERVED
+uint8   reserved4       # RESERVED
+uint8   multiping_seq_sz  # Number of bands in the multiping sequence
+uint8   reserved5       # RESERVED
+uint8   multiping_seq_idx # Index of this band in the multiping sequence starting from 0
 float32 tx_angle        # Tx elevation steering in radians
 float32 tx_voltage      # Tx voltage - peak-voltage signal over ceramics. NaN for sonars without measurement
 
@@ -47,7 +50,7 @@ uint8   BEAM_DIST_MODE_256ED = 3
 uint8   BEAM_DIST_MODE_512EAX = 4
 uint8   BEAM_DIST_MODE_256EAX = 5
 
-uint8   beam_dist_mode
+uint8   beam_distribution_mode
 
 uint8   SONAR_MODE_FLS = 0
 uint8   SONAR_MODE_BATHY = 1
@@ -55,10 +58,12 @@ uint8   SONAR_MODE_BATHY_AMP = 2
 uint8   SONAR_MODE_BF_PASSTHROUGH = 4
 uint8   SONAR_MODE_BATHY_EDGE_ENHANCE = 5
 uint8   SONAR_MODE_SUPER_RES_BATHY = 6
+uint8   SONAR_MODE_STANDARD_YAW_STAB = 8
+uint8   SONAR_MODE_DUAL_SWATH = 9
 
 uint8   sonar_mode
 
-uint16  reserved5        # RESERVED
+uint16  reserved6        # RESERVED
 float32 gate_tilt        # Gate tilt in radians, for depth gates
-float32 reserved6        # RESERVED
-uint8[28] reserved7      # RESERVED
+float32 reserved7        # RESERVED
+uint8[28] reserved8      # RESERVED

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>norbit_interfaces</name>
+  <version>0.1.0</version>
+  <description>The message and service definitions used with the norbit_driver package</description>
+
+  <maintainer email="kkrasnosky@uri.edu">Kristopher Krasnosky</maintainer>
+  <maintainer email="roland@ccom.unh.edu">Roland Arsenault</maintainer>
+
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+
+  <build_depend>std_msgs</build_depend>
+
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

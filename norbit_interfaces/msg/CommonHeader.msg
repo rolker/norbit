@@ -5,6 +5,7 @@ uint32 preable   # 0xDEADBEEF
 uint32 TYPE_BATHYMETRIC = 1
 uint32 TYPE_WATERCOLUMN = 2
 uint32 TYPE_SNIPPET     = 4
+uint32 TYPE_SIDESCAN    = 5
 
 uint32 type      # Set to 1 for bathymetric data
 uint32 size      # Size of entire package in bytes
