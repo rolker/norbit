@@ -30,7 +30,7 @@ struct ConnectionParams {
   bool publish_detections = false;
   bool publish_ranges = false;
   bool publish_norbit_watercolumn = false;
-  bool publish_watercolumn = true;
+  bool publish_watercolumn = false; //true;
   double cmd_timeout = 0.5;
   std::vector<std::string> startup_settings={"set_power 0"}; // default to not pinging
   std::vector<std::string> shutdown_settings={"set_power 0"};

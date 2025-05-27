@@ -43,7 +43,7 @@ std::pair<std::string, std::string> splitCmd(const std::string &cmd) {
   std::pair<std::string, std::string> out;
   std::istringstream iss(cmd);
   iss >> out.first;
-  iss >> out.second;
+  out.second = iss.str().substr(out.first.length());
   return out;
 }
 
@@ -321,7 +321,7 @@ norbit_interfaces::msg::CmdResp NorbitConnection::sendCmd(
   out.ack = false;
   out.resp = "";
 
-  std::string message = cmd + " " + val;
+  std::string message = cmd + " " + val + "\n";
   std::string key = cmd;
 
   // some of the norbit reponses don't echo back set_<cmd> so we need to strip
@@ -339,9 +339,8 @@ norbit_interfaces::msg::CmdResp NorbitConnection::sendCmd(
     *sockets_.cmd,
     boost::asio::buffer(message),
     boost::bind(
-      &NorbitConnection::receiveCmd,
-      this,
-      boost::asio::placeholders::error
+      &NorbitConnection::listenForCmd,
+      this
     )
   );
   
@@ -353,6 +352,7 @@ norbit_interfaces::msg::CmdResp NorbitConnection::sendCmd(
     spin_once();
     if (cmd_resp_queue_.size() > 0) {
       out.resp = cmd_resp_queue_.front();
+      RCLCPP_INFO_STREAM(get_logger(), "Received response: " << out.resp);
       if (cmd_resp_queue_.front().find(key) != std::string::npos) {
         RCLCPP_INFO_STREAM(get_logger(), "ACK Received: " << cmd_resp_queue_.front());
         cmd_resp_queue_.pop_front();
@@ -392,7 +392,7 @@ void NorbitConnection::receiveCmd(const boost::system::error_code &err) {
   std::istream is(&cmd_resp_buffer_);
   std::getline(is, line);
   cmd_resp_queue_.push_back(line);
-  //listenForCmd();
+  listenForCmd();
   return;
 }
 
@@ -442,6 +442,8 @@ void NorbitConnection::processHdrMsg(boost::asio::ip::tcp::socket & sock, boost:
       dataPtr.reset(new char[dataSize]);
       size_t bytesRead =read(sock,boost::asio::buffer(dataPtr.get(), dataSize));
 
+      RCLCPP_INFO_STREAM(get_logger(), "Received " << bytesRead << " bytes of data since the common header");
+
       if(msg.setBits(dataPtr)){
         if (msg.commonHeader().type == norbit_types::bathymetric) {
           bathyCallback(msg.getBathy());
@@ -453,20 +455,27 @@ void NorbitConnection::processHdrMsg(boost::asio::ip::tcp::socket & sock, boost:
       else RCLCPP_WARN(get_logger(), "Watercolumn Message failed CRC check:  Ignoring");
 
     }else{
-      if(msg.commonHeader().version!=NORBIT_CURRENT_VERSION)
-        RCLCPP_WARN_STREAM(get_logger(), "Invalid version detected, expected " << NORBIT_CURRENT_VERSION << ", got " << msg.commonHeader().version);
+      RCLCPP_ERROR_STREAM(get_logger(), "Header: " << to_yaml(msg.commonHeader()));
       if(msg.commonHeader().preable==norbit_interfaces::msg::CommonHeader::NORBIT_PREAMBLE_KEY)
         RCLCPP_WARN(get_logger(), "Invalid header preamble detected");
     }
 
   } catch (...) {
     RCLCPP_ERROR(get_logger(), "An unhandled exception occurred in NorbitConnection::recHandler()");
+    throw;
   }
 }
 
 
 
 void NorbitConnection::bathyCallback(norbit_types::BathymetricData data) {
+
+  RCLCPP_INFO_STREAM(get_logger(), "Received bathymetric data: "
+      <<  to_yaml(data.bathymetricHeader()));
+
+  RCLCPP_INFO_STREAM(get_logger(), "Number of bytes we should have: "
+      << data.bathymetricHeader().n*sizeof(norbit_interfaces::msg::BathymetricPoint)+sizeof(norbit_interfaces::msg::BathymetricHeader));
+
   pcl::PointCloud<pcl::PointXYZI>::Ptr detections(
       new pcl::PointCloud<pcl::PointXYZI>);
   detections->header.frame_id = params_.sensor_frame;
@@ -477,6 +486,8 @@ void NorbitConnection::bathyCallback(norbit_types::BathymetricData data) {
         float range = float(data.data(i).sample_number) *
                       data.bathymetricHeader().sound_velocity /
                       (2.0 * data.bathymetricHeader().sample_rate);
+        if (i<10)
+          RCLCPP_INFO_STREAM(get_logger(), i << " sounding: " << to_yaml(data.data(i)));
         pcl::PointXYZI p;
         p.x = range * sinf(data.bathymetricHeader().tx_angle);
         p.y = range * sinf(data.data(i).angle);

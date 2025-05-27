@@ -5,10 +5,6 @@
 #include <memory>
 #include <boost/array.hpp>
 
-
-//#define NORBIT_PREAMBLE_KEY 0xDEADBEEF
-#define NORBIT_CURRENT_VERSION 4
-
 namespace norbit_types {
   // define all the datypes in the DFD as their equivalent c++ types
   using uint8  = uint8_t;

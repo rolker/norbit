@@ -35,3 +35,4 @@ float32 tx_voltage        # Tx peak-voltage over elements, NaN on non-STX sonars
 float32 swath_dir         # Center pointing direction of swath, in radians
 float32 swath_open        # Opening angle of swath, in radians
 float32 gate_tilt         # Gate tilt in radians, for depth gates
+uint8[24] reserved5

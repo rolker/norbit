@@ -21,8 +21,38 @@ class Message
     }
     norbit_interfaces::msg::CommonHeader commonHeader(){return *header_;}
     bool headerValid(){
-      return header_->preable==norbit_interfaces::msg::CommonHeader::NORBIT_PREAMBLE_KEY &&
-             header_->version==NORBIT_CURRENT_VERSION;
+      if(header_->preable==norbit_interfaces::msg::CommonHeader::NORBIT_PREAMBLE_KEY)
+      {
+        switch(header_->type) {
+        case norbit_interfaces::msg::CommonHeader::TYPE_BATHYMETRIC:
+          switch(header_->version) {
+            case 4:
+            case 8:
+              return true;
+            default:
+              return false;
+          }
+        case norbit_interfaces::msg::CommonHeader::TYPE_WATERCOLUMN:
+          switch(header_->version) {
+            case 4:
+            case 9:
+              return true;
+            default:
+              return false;
+          }
+        case norbit_interfaces::msg::CommonHeader::TYPE_SNIPPET:
+          switch(header_->version) {
+            default:
+              return false;
+          }
+        case norbit_interfaces::msg::CommonHeader::TYPE_SIDESCAN:
+          switch(header_->version) {
+            default:
+              return false;
+          }
+        }
+      }
+      return false;
     }
     bool setBits(std::shared_ptr<char> bits){
       bits_ = bits;
