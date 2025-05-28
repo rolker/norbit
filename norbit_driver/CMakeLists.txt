@@ -32,6 +32,7 @@ add_library(norbit SHARED
   src/conversions.cpp
   src/message.cpp
   src/norbit_connection.cpp
+  src/norbit_node.cpp
   src/water_column_data.cpp
 )
 
@@ -68,7 +69,7 @@ install(
 # norbit node
 
 add_executable(norbit_node
-  nodes/norbit_node.cpp
+  nodes/norbit_node_main.cpp
 )
 
 target_link_libraries(norbit_node

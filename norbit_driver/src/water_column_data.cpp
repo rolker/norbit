@@ -7,7 +7,7 @@ namespace norbit_types {
 
   }
 
-  size_t WaterColumnData::dataSize(){
+  size_t WaterColumnData::dataSize()const{
     size_t size = 0;
     switch (water_column_header_->dtype) {
       case norbit_interfaces::msg::WaterColumnHeader::DTYPE_UINT8:
@@ -61,7 +61,7 @@ namespace norbit_types {
   }
 
 
-  norbit_interfaces::msg::WaterColumnStamped WaterColumnData::getRosMsg(std::string frame_id){
+  norbit_interfaces::msg::WaterColumnStamped WaterColumnData::getRosMsg(std::string frame_id)const{
     auto m = water_column_header_->m;
     auto n = water_column_header_->n;
 

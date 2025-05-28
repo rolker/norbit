@@ -15,7 +15,7 @@ namespace norbit_types {
     data_ = reinterpret_cast<norbit_interfaces::msg::BathymetricPoint*>(
           &bits_.get()[sizeof(norbit_interfaces::msg::BathymetricHeader)] );
   }
-  norbit_interfaces::msg::BathymetricStamped BathymetricData::getRosMsg(std::string frame_id){
+  norbit_interfaces::msg::BathymetricStamped BathymetricData::getRosMsg(std::string frame_id)const{
     norbit_interfaces::msg::BathymetricStamped outMsg;
     rclcpp::Time stamp(bathymetric_header_->time*1000000000);
     outMsg.header.stamp = stamp;

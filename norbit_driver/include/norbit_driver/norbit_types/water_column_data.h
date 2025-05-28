@@ -10,11 +10,9 @@ namespace norbit_types {
   {
   public:
     WaterColumnData();
-    size_t dataSize();
+    size_t dataSize() const;
     void setBits(std::shared_ptr<norbit_interfaces::msg::CommonHeader> comm_hdr, std::shared_ptr<char> bits);
-//    norbit_msgs::BathymetricHeader & bathymetricHeader(){return *bathymetric_header_;}
-//    norbit_msgs::BathymetricPoint & data(size_t i){return data_[i];}
-    norbit_interfaces::msg::WaterColumnStamped getRosMsg(std::string frame_id);
+    norbit_interfaces::msg::WaterColumnStamped getRosMsg(std::string frame_id) const;
   protected:
     std::shared_ptr<norbit_interfaces::msg::CommonHeader> comm_hdr_;
 
